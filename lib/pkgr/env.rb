@@ -29,6 +29,7 @@ module Pkgr
 
       variables.inject({}) do |h, var|
         name, value = var.split('=')
+        raise Errors::ConfigurationInvalid, "Environment variable: #{name} doesn't have a value"
         h[name.strip] = value.strip
         h
       end

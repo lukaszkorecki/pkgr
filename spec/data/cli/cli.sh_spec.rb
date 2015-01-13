@@ -152,6 +152,20 @@ describe "bash cli" do
         expect(process.stdout).to eq("YEAH")
       end
 
+      it "sets config for multiple variables" do
+        process.call("config:set YOH=YEAH WU='TANG CLAN'")
+        expect(process).to be_ok
+        expect(process.stdout).to eq("")
+
+        expect(File.read("#{directory}/etc/my-app/conf.d/other")).
+          to eq("export YOH=YEAH\nWU='TANG CLAN'\n")
+
+        process.call("config:get WU")
+        expect(process).to be_ok
+        expect(process.stdout).to eq("TANG CLAN")
+
+      end
+
       it "returns the full config" do
         process.call("config")
         expect(process).to be_ok

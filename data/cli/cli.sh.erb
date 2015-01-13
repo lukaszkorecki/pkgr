@@ -293,17 +293,27 @@ while : ; do
     config:set)
       [ $# -lt 2 ] && usage
 
-      CONFIG=(${2//=/ })
-
-      VAR=${CONFIG[0]:?"Invalid variable name"}
-      VALUE=${CONFIG[1]:?"Invalid value"}
+      shift
 
       CONFIG_FILE=$(_p "/etc/${APP_NAME}/conf.d/other")
       touch ${CONFIG_FILE}
 
-      sed -i -r "s/^.*${VAR}.*$//g" $(_p "/etc/${APP_NAME}/conf.d")/*
+      for CONFIG in "$@" ; do
 
-      echo "export ${VAR}=${VALUE}" >> "${CONFIG_FILE}"
+        echo "1: >>>>$CONFIG<<<<"
+        CONFIG=(${CONFIG//=/ })
+        echo "2: >>>>$CONFIG<<<<"
+
+        VAR=${CONFIG[0]:?"Invalid variable name"}
+        VALUE=${CONFIG[1]:?"Invalid value"}
+
+        echo "3>>> ${CONFIG[0]} <<<"
+        echo "3>>> ${CONFIG[1]} <<<"
+
+        sed -i -r "s/^.*${VAR}.*$//g" $(_p "/etc/${APP_NAME}/conf.d")/*
+
+        echo "export ${VAR}=${VALUE}" >> "${CONFIG_FILE}"
+      done
 
       break;;
 
